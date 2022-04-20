@@ -15,7 +15,13 @@ namespace BankApp.Repository
 
         public void Delete(string login, string password, string userToDelete)
         {
-            throw new System.NotImplementedException();
+            var userLogged = RetrieveUserInfo(login, password);
+            if (userLogged is not null && userLogged.Role == Roles.ADMIN)
+            {
+                var userDel = _db.Users.First<User>(u => u.Login == userToDelete);
+                _db.Users.Remove(userDel);
+                _db.SaveChanges();
+            }
         }
 
         public User Login(string login, string password)

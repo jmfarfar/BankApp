@@ -53,5 +53,11 @@ namespace BankApp.Controllers
         }
 
         // Delete User API
+        [HttpDelete]
+        public async Task<ActionResult> DeleteUser(string login, string password, string userToDelete)
+        {
+            _bankRepository.Delete(login,password,userToDelete);
+            return Ok();
+        }
     }
 }
