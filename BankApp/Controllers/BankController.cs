@@ -11,15 +11,12 @@ namespace BankApp.Controllers
     [ApiController]
     public class BankController : ControllerBase
     {
-        private readonly BankDbContext _db;
         private readonly IBankRepository _bankRepository;
 
-        public BankController(BankDbContext db, IBankRepository bankRepository)
+        public BankController(IBankRepository bankRepository)
         {
-            _db = db;
             _bankRepository = bankRepository;
         }
-
 
         // Login API 
         [HttpGet]
@@ -30,8 +27,8 @@ namespace BankApp.Controllers
             {
                 return Ok(user);
             }
-            return BadRequest();
-            
+            return BadRequest("ERROR: The login or password you entered do not exist!");
+
         }
 
 
@@ -39,8 +36,7 @@ namespace BankApp.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateUser(User user)
         {
-            _db.Add(user);
-            await _db.SaveChangesAsync();
+            await _bankRepository.Create(user);
             return Ok();
         }
 
@@ -48,16 +44,20 @@ namespace BankApp.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateBalance(string login, string password, decimal newBalance)
         {
-            _bankRepository.Update(login,password,newBalance);
-            return Ok();            
+            var result = await _bankRepository.Update(login, password, newBalance);
+            if (result)
+                return Ok();
+            return BadRequest("ERROR: The balance cannot be updated");
         }
 
         // Delete User API
         [HttpDelete]
         public async Task<ActionResult> DeleteUser(string login, string password, string userToDelete)
         {
-            _bankRepository.Delete(login,password,userToDelete);
-            return Ok();
+            var result = await _bankRepository.Delete(login, password, userToDelete);
+            if (result)
+                return Ok();
+            return BadRequest("ERROR: The user cannot be removed");
         }
     }
 }
