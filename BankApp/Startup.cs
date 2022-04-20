@@ -1,3 +1,4 @@
+using BankApp.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ namespace BankApp
             services.AddDbContext<BankDbContext>(options => options.UseSqlite("Data Source=BankDB.db"));
 
             services.AddControllers();
+            services.AddTransient<IBankRepository, BankRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BankApp", Version = "v1" });
