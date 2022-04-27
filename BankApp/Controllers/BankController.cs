@@ -7,6 +7,8 @@ using BankApp.Repository;
 using BankApp.Core.DTO;
 using BankApp.Core.Register;
 using MediatR;
+using BankApp.Core.Login;
+using BankApp.Core.LoggedUser;
 
 namespace BankApp.Controllers
 {
@@ -23,25 +25,24 @@ namespace BankApp.Controllers
             _mediator = mediator;
         }
 
-        // Login API 
-        [HttpGet]
-        public ActionResult<User> Login(string login, string password)
-        {
-            var user = _bankRepository.Login(login, password);
-            if (user is not null)
-            {
-                return Ok(user);
-            }
-            return BadRequest("ERROR: The login or password you entered do not exist!");
-
-        }
-
-
         // Create User API (for internal purposes to populate the database)
         [HttpPost("register")]
         public async Task<ActionResult<UserDTO>> CreateUser(UserRegisterCommand param)
         {
             return await _mediator.Send(param);
+        }
+
+        // Login API 
+        [HttpPost("login")]
+        public async Task<ActionResult<UserDTO>> Login(UserLoginCommand param)
+        {            
+            return await _mediator.Send(param);
+        }        
+
+        [HttpGet]
+        public async Task<ActionResult<UserDTO>> Get()
+        {
+            return await _mediator.Send(new LoggedUserCommand());
         }
 
         // Update Balance API        
