@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BankApp.Core.DTO;
+using BankApp.Core.JWT;
 using BankApp.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -17,11 +18,13 @@ namespace BankApp.Core.Register
         private readonly BankDbContext _context;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
-        public UserRegisterHandler(BankDbContext context, UserManager<User> userManager, IMapper mapper)
+        private readonly IJWTGenerator _jwtGenerator;
+        public UserRegisterHandler(BankDbContext context, UserManager<User> userManager, IMapper mapper, IJWTGenerator jwtGenerator)
         {
             _context = context;
             _userManager = userManager;
             _mapper = mapper;
+            _jwtGenerator = jwtGenerator;
         }
         public async Task<UserDTO> Handle(UserRegisterCommand request, CancellationToken cancellationToken)
         {
@@ -45,6 +48,7 @@ namespace BankApp.Core.Register
             if (result.Succeeded)
             {
                 var userDTO = _mapper.Map<User, UserDTO>(user);
+                userDTO.Token = _jwtGenerator.CreateToken(user);
                 return userDTO;
             }
 

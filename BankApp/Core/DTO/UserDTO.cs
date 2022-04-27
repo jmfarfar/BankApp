@@ -9,5 +9,6 @@ namespace BankApp.Core.DTO
         public string Name { get; set; }
         public Roles Role { get; set; }
         public decimal USDBalance { get; set; }
+        public string Token { get; set; }
     }
 }

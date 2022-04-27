@@ -1,3 +1,4 @@
+using BankApp.Core.JWT;
 using BankApp.Core.Persistence;
 using BankApp.Core.Register;
 using BankApp.Entities;
@@ -53,6 +54,8 @@ namespace BankApp
 
             services.AddMediatR(typeof(UserRegisterCommand).Assembly);
             services.AddAutoMapper(typeof(UserRegisterHandler));
+
+            services.AddScoped<IJWTGenerator, JWTGenerator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
