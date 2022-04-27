@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Linq;
 using BankApp.Repository;
+using BankApp.Core.DTO;
+using BankApp.Core.Register;
+using MediatR;
 
 namespace BankApp.Controllers
 {
@@ -12,10 +15,12 @@ namespace BankApp.Controllers
     public class BankController : ControllerBase
     {
         private readonly IBankRepository _bankRepository;
+        private readonly IMediator _mediator;
 
-        public BankController(IBankRepository bankRepository)
+        public BankController(IBankRepository bankRepository, IMediator mediator)
         {
             _bankRepository = bankRepository;
+            _mediator = mediator;
         }
 
         // Login API 
@@ -33,11 +38,10 @@ namespace BankApp.Controllers
 
 
         // Create User API (for internal purposes to populate the database)
-        [HttpPost]
-        public async Task<ActionResult> CreateUser(User user)
+        [HttpPost("register")]
+        public async Task<ActionResult<UserDTO>> CreateUser(UserRegisterCommand param)
         {
-            await _bankRepository.Create(user);
-            return Ok();
+            return await _mediator.Send(param);
         }
 
         // Update Balance API        
