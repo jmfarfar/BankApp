@@ -42,11 +42,11 @@ namespace BankApp.Controllers
 
         // Update Balance API        
         [HttpPut]
-        public async Task<ActionResult> UpdateBalance(string login, string password, decimal newBalance)
+        public async Task<ActionResult<User>> UpdateBalance(string login, string password, decimal newBalance)
         {
             var result = await _bankRepository.Update(login, password, newBalance);
-            if (result)
-                return Ok();
+            if (result is not null)
+                return Ok(result);
             return BadRequest("ERROR: The balance cannot be updated");
         }
 

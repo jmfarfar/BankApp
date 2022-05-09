@@ -49,7 +49,7 @@ namespace BankApp.Repository
             return null;
         }
 
-        public async Task<bool> Update(string login, string password, decimal newBalance)
+        public async Task<User> Update(string login, string password, decimal newBalance)
         {
             var userLogged = RetrieveUserInfo(login, password);
             if (userLogged is not null)
@@ -58,9 +58,9 @@ namespace BankApp.Repository
                 _db.ChangeTracker.Clear();
                 _db.Users.Update(userLogged);
                 await _db.SaveChangesAsync();
-                return true;
+                return userLogged;
             }
-            return false;
+            return null;
         }        
 
         // method to retrieve all user info(including password) to help the Update method to update the correct registry.
